@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="ENGLISH101" />
+  <title>ENGLISH101 연락처</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body { font-family: 'Noto Sans KR', -apple-system, sans-serif; background: #f8fafc; min-height: 100vh; }
+
+    .header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 60%, #1e40af 100%);
+      padding: 52px 16px 16px;
+      color: #fff;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .header-inner { max-width: 700px; margin: 0 auto; }
+    .logo-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .logo-badge {
+      background: #fff; border-radius: 10px; padding: 6px 10px;
+      display: flex; flex-direction: column; line-height: 1.1;
+    }
+    .logo-101 { font-weight: 900; font-size: 18px; color: #0f172a; letter-spacing: -0.5px; }
+    .logo-eng { font-weight: 700; font-size: 8px; color: #1e40af; letter-spacing: 1px; }
+    .header-title { font-weight: 800; font-size: 18px; }
+    .header-sub { font-size: 12px; color: #93c5fd; margin-top: 2px; }
+    .search-box {
+      position: relative;
+    }
+    .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 16px; pointer-events: none; }
+    .search-input {
+      width: 100%; padding: 12px 16px 12px 42px;
+      border-radius: 12px; border: none;
+      background: rgba(255,255,255,0.15);
+      color: #fff; font-size: 14px; font-family: 'Noto Sans KR', sans-serif;
+      outline: none;
+    }
+    .search-input::placeholder { color: rgba(255,255,255,0.5); }
+
+    .grade-tabs {
+      background: #fff; border-bottom: 1px solid #e5e7eb;
+      overflow-x: auto; scrollbar-width: none;
+    }
+    .grade-tabs::-webkit-scrollbar { display: none; }
+    .grade-tabs-inner { display: flex; max-width: 700px; margin: 0 auto; padding: 0 12px; }
+    .grade-tab {
+      padding: 12px 14px; background: none; border: none; cursor: pointer;
+      font-size: 13px; font-family: 'Noto Sans KR', sans-serif;
+      white-space: nowrap; border-bottom: 2.5px solid transparent;
+      color: #6b7280; font-weight: 400; transition: all 0.15s;
+    }
+    .grade-tab.active { color: #1d4ed8; font-weight: 700; border-bottom-color: #1d4ed8; }
+
+    .class-chips {
+      background: #f8fafc; border-bottom: 1px solid #e5e7eb;
+      padding: 10px 16px; overflow-x: auto; scrollbar-width: none;
+    }
+    .class-chips::-webkit-scrollbar { display: none; }
+    .class-chips-inner { display: flex; gap: 8px; max-width: 700px; margin: 0 auto; flex-wrap: nowrap; }
+    .chip {
+      padding: 6px 14px; border-radius: 99px; border: none; cursor: pointer;
+      font-size: 12px; font-weight: 600; white-space: nowrap;
+      font-family: 'Noto Sans KR', sans-serif; transition: all 0.15s;
+      background: #e5e7eb; color: #374151;
+    }
+    .chip.active { background: #1d4ed8; color: #fff; }
+
+    .result-count { max-width: 700px; margin: 0 auto; padding: 14px 16px 6px; font-size: 13px; color: #6b7280; font-weight: 500; }
+
+    .cards-grid {
+      max-width: 700px; margin: 0 auto; padding: 8px 16px 60px;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 12px;
+    }
+
+    .card {
+      background: #fff; border: 1px solid #e5e7eb; border-radius: 14px;
+      padding: 16px 18px; display: flex; flex-direction: column; gap: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: box-shadow 0.15s;
+    }
+    .card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.10); }
+
+    .card-top { display: flex; align-items: center; gap: 10px; }
+    .avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 800; font-size: 15px; flex-shrink: 0;
+    }
+    .student-name { font-weight: 700; font-size: 16px; color: #111827; }
+    .student-class { font-size: 11px; color: #6b7280; margin-top: 1px; }
+
+    .phone-rows { display: flex; flex-direction: column; gap: 7px; padding-left: 4px; }
+    .phone-row { display: flex; align-items: center; gap: 8px; }
+    .tag {
+      font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 99px;
+      flex-shrink: 0;
+    }
+    .tag-student { background: #ecfdf5; color: #065f46; }
+    .tag-mom { background: #fce7f3; color: #be185d; }
+    .tag-dad { background: #dbeafe; color: #1e40af; }
+    .tag-other { background: #f3f4f6; color: #374151; }
+    .tag-aunt { background: #fef3c7; color: #92400e; }
+
+    .phone-link {
+      font-family: 'Courier New', monospace;
+      font-size: 14px; color: #1d4ed8; text-decoration: none; font-weight: 500;
+      letter-spacing: 0.03em;
+    }
+    .phone-link:hover { text-decoration: underline; }
+
+    .empty { text-align: center; padding: 60px 0; color: #9ca3af; font-size: 14px; }
+    .empty-icon { font-size: 36px; margin-bottom: 12px; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="logo-row">
+      <div class="logo-badge">
+        <span class="logo-101">101</span>
+        <span class="logo-eng">ENGLISH</span>
+      </div>
+      <div>
+        <div class="header-title">학생 연락처</div>
+        <div class="header-sub" id="totalCount"></div>
+      </div>
+    </div>
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" type="text" id="searchInput" placeholder="이름, 학년, 클래스, 번호로 검색..." oninput="onSearch()" />
+    </div>
+  </div>
+</div>
+
+<div class="grade-tabs">
+  <div class="grade-tabs-inner" id="gradeTabs"></div>
+</div>
+
+<div class="class-chips" id="classChipsWrap">
+  <div class="class-chips-inner" id="classChips"></div>
+</div>
+
+<div class="result-count" id="resultCount"></div>
+<div class="cards-grid" id="cardsGrid"></div>
+
+<script>
+const students = [
+  { name:"허서아", cls:"초등 4 학년 월수금A", sp:"01089419734", g1t:"어머니", g1p:"01089419734", g2t:"", g2p:"" },
+  { name:"허다윤", cls:"초등 4 학년 월수금A", sp:"01034489896", g1t:"어머니", g1p:"01034489896", g2t:"", g2p:"" },
+  { name:"최시원", cls:"초등 4 학년 월수금A", sp:"01076869980", g1t:"어머니", g1p:"01076869980", g2t:"", g2p:"" },
+  { name:"한민호", cls:"초등 4 학년 월수금B", sp:"01036949570", g1t:"어머니", g1p:"01036949570", g2t:"", g2p:"" },
+  { name:"윤서희", cls:"초등 4 학년 월수금B", sp:"01037673360", g1t:"어머니", g1p:"01041154869", g2t:"", g2p:"" },
+  { name:"오승아", cls:"초등 4 학년 월수금B", sp:"01035419621", g1t:"어머니", g1p:"01035419621", g2t:"", g2p:"" },
+  { name:"양시완", cls:"초등 4 학년 월수금B", sp:"01040992950", g1t:"어머니", g1p:"01040992950", g2t:"", g2p:"" },
+  { name:"배연호", cls:"초등 4 학년 월수금B", sp:"01062787886", g1t:"어머니", g1p:"01062787886", g2t:"", g2p:"" },
+  { name:"박보국", cls:"초등 4 학년 월수금B", sp:"01097302316", g1t:"어머니", g1p:"01097302316", g2t:"", g2p:"" },
+  { name:"김채현", cls:"초등 4 학년 월수금B", sp:"01048161620", g1t:"아버지", g1p:"01063262216", g2t:"어머니", g2p:"01033993844" },
+  { name:"강아린", cls:"초등 4 학년 월수금B", sp:"01047252403", g1t:"어머니", g1p:"01047252403", g2t:"", g2p:"" },
+  { name:"오세현", cls:"초등 5 학년 화목", sp:"01020482096", g1t:"어머니", g1p:"01020482096", g2t:"", g2p:"" },
+  { name:"김규리", cls:"초등 5 학년 화목", sp:"01089442587", g1t:"어머니", g1p:"01089442587", g2t:"", g2p:"" },
+  { name:"조하준", cls:"초등 5학년 월수금 A", sp:"01062270292", g1t:"어머니", g1p:"01062270292", g2t:"", g2p:"" },
+  { name:"장우진", cls:"초등 5학년 월수금 A", sp:"01046700671", g1t:"어머니", g1p:"01046700671", g2t:"", g2p:"" },
+  { name:"임태희", cls:"초등 5학년 월수금 A", sp:"01042764219", g1t:"어머니", g1p:"01052276293", g2t:"", g2p:"" },
+  { name:"윤다올", cls:"초등 5학년 월수금 A", sp:"01066753033", g1t:"어머니", g1p:"01066753033", g2t:"", g2p:"" },
+  { name:"안대훈", cls:"초등 5학년 월수금 A", sp:"01032147718", g1t:"기타", g1p:"01032147718", g2t:"", g2p:"" },
+  { name:"김지수", cls:"초등 5학년 월수금 A", sp:"01042276133", g1t:"어머니", g1p:"01042276133", g2t:"", g2p:"" },
+  { name:"장우민", cls:"초등 5학년 월수금 B", sp:"01046700671", g1t:"어머니", g1p:"01046700671", g2t:"", g2p:"" },
+  { name:"오윤수", cls:"초등 5학년 월수금 B", sp:"01082336029", g1t:"어머니", g1p:"01034310708", g2t:"", g2p:"" },
+  { name:"여로아", cls:"초등 5학년 월수금 B", sp:"01046313876", g1t:"어머니", g1p:"01046603876", g2t:"", g2p:"" },
+  { name:"이규리", cls:"초등 5학년 월수금 B", sp:"01023589587", g1t:"아버지", g1p:"01095876885", g2t:"어머니", g2p:"01051316885" },
+  { name:"이규현", cls:"초등 5학년 월수금 B", sp:"01029252959", g1t:"어머니", g1p:"01041188214", g2t:"", g2p:"" },
+  { name:"최민", cls:"초등 5학년 월수금 B", sp:"01097935207", g1t:"어머니", g1p:"01092925207", g2t:"", g2p:"" },
+  { name:"김지효", cls:"초등 5학년 월수금 B", sp:"01085267399", g1t:"어머니", g1p:"01085267399", g2t:"", g2p:"" },
+  { name:"나세연", cls:"초등 5학년 월수금 B", sp:"01047298696", g1t:"어머니", g1p:"01047298696", g2t:"", g2p:"" },
+  { name:"이소명", cls:"초등 6학년 화목 A", sp:"01071318723", g1t:"어머니", g1p:"01071318723", g2t:"", g2p:"" },
+  { name:"백지우", cls:"초등 6학년 화목 A", sp:"01031630815", g1t:"기타", g1p:"01031630815", g2t:"", g2p:"" },
+  { name:"박채이", cls:"초등 6학년 화목 A", sp:"01088975896", g1t:"어머니", g1p:"01088975896", g2t:"", g2p:"" },
+  { name:"김민채", cls:"초등 6학년 화목 A", sp:"01082352856", g1t:"어머니", g1p:"01023300398", g2t:"", g2p:"" },
+  { name:"염유이", cls:"초등 6학년 월수금 A", sp:"01027434758", g1t:"어머니", g1p:"01027434758", g2t:"", g2p:"" },
+  { name:"양하은", cls:"초등 6학년 월수금 A", sp:"01040992950", g1t:"기타", g1p:"01040992950", g2t:"", g2p:"" },
+  { name:"유한선", cls:"초등 6학년 월수금 A", sp:"01093770079", g1t:"어머니", g1p:"01093770079", g2t:"", g2p:"" },
+  { name:"조수연", cls:"초등 6학년 월수금 A", sp:"01089360228", g1t:"기타", g1p:"01089360228", g2t:"", g2p:"" },
+  { name:"김윤기", cls:"초등 6학년 월수금 A", sp:"01042152736", g1t:"어머니", g1p:"01042152736", g2t:"", g2p:"" },
+  { name:"김승엽", cls:"초등 6학년 월수금 A", sp:"01087775181", g1t:"기타", g1p:"01087775181", g2t:"", g2p:"" },
+  { name:"이호", cls:"초등 6학년 월수금 B", sp:"01075047161", g1t:"어머니", g1p:"01075047161", g2t:"", g2p:"" },
+  { name:"최온유", cls:"초등 6학년 월수금 B", sp:"01049769814", g1t:"어머니", g1p:"01066020602", g2t:"", g2p:"" },
+  { name:"최민지", cls:"초등 6학년 월수금 B", sp:"01040641476", g1t:"어머니", g1p:"01024141476", g2t:"", g2p:"" },
+  { name:"박지안", cls:"초등 6학년 월수금 B", sp:"01062415423", g1t:"기타", g1p:"01094764399", g2t:"", g2p:"" },
+  { name:"김윤서", cls:"초등 6학년 월수금 B", sp:"01086482611", g1t:"어머니", g1p:"01038532611", g2t:"", g2p:"" },
+  { name:"주가온", cls:"초등 2,3 학년 화목 A", sp:"01025341937", g1t:"기타", g1p:"01025341937", g2t:"", g2p:"" },
+  { name:"유호승", cls:"초등 2,3 학년 화목 A", sp:"01046193163", g1t:"기타", g1p:"01046193163", g2t:"", g2p:"" },
+  { name:"구동하", cls:"초등 2,3 학년 화목 A", sp:"01068222452", g1t:"기타", g1p:"01068222452", g2t:"", g2p:"" },
+  { name:"김채원", cls:"초등 파닉스 A", sp:"01073860317", g1t:"어머니", g1p:"01073860317", g2t:"", g2p:"" },
+  { name:"구려원", cls:"초등 파닉스 C", sp:"01068222452", g1t:"어머니", g1p:"01068222452", g2t:"", g2p:"" },
+  { name:"이지유", cls:"중등 1학년 월수 A", sp:"01043781307", g1t:"어머니", g1p:"01041188214", g2t:"", g2p:"" },
+  { name:"이소은", cls:"중등 1학년 월수 A", sp:"01021691707", g1t:"어머니", g1p:"01047051707", g2t:"", g2p:"" },
+  { name:"이세윤", cls:"중등 1학년 월수 A", sp:"01075226443", g1t:"어머니", g1p:"01075226443", g2t:"", g2p:"" },
+  { name:"오선율", cls:"중등 1학년 월수 A", sp:"01057853745", g1t:"기타(고모님)", g1p:"01045349405", g2t:"", g2p:"" },
+  { name:"손예림", cls:"중등 1학년 월수 A", sp:"01085455476", g1t:"어머니", g1p:"01085455476", g2t:"", g2p:"" },
+  { name:"김시현", cls:"중등 1학년 월수 A", sp:"01054376431", g1t:"기타", g1p:"01052056431", g2t:"", g2p:"" },
+  { name:"정태랑", cls:"중등 1 학년 화목", sp:"01094220996", g1t:"어머니", g1p:"01094220996", g2t:"", g2p:"" },
+  { name:"신윤희", cls:"중등 1 학년 화목", sp:"01089793187", g1t:"어머니", g1p:"01089793187", g2t:"", g2p:"" },
+  { name:"문소윤", cls:"중등 1 학년 화목", sp:"01047173019", g1t:"기타", g1p:"01071743019", g2t:"", g2p:"" },
+  { name:"김예진", cls:"중등 1 학년 화목", sp:"01057070622", g1t:"기타", g1p:"01092650622", g2t:"", g2p:"" },
+  { name:"김시헌", cls:"중등 1 학년 화목", sp:"01053394982", g1t:"기타", g1p:"01031254982", g2t:"", g2p:"" },
+  { name:"이환", cls:"중등 2학년 월수 A", sp:"01086093372", g1t:"어머니", g1p:"01050213372", g2t:"", g2p:"" },
+  { name:"이해준", cls:"중등 2학년 월수 A", sp:"01095726243", g1t:"어머니", g1p:"01038826243", g2t:"", g2p:"" },
+  { name:"이해강", cls:"중등 2학년 월수 A", sp:"01095716243", g1t:"어머니", g1p:"01038826243", g2t:"", g2p:"" },
+  { name:"여이레", cls:"중등 2학년 월수 A", sp:"01090739530", g1t:"어머니", g1p:"01090455743", g2t:"", g2p:"" },
+  { name:"유동엽", cls:"중등 2학년 월수 A", sp:"01046193163", g1t:"기타", g1p:"01046193163", g2t:"", g2p:"" },
+  { name:"김정우", cls:"중등 2학년 월수 A", sp:"01064423551", g1t:"기타", g1p:"01091453551", g2t:"", g2p:"" },
+  { name:"김윤재", cls:"중등 2학년 월수 A", sp:"01068585439", g1t:"어머니", g1p:"01042152736", g2t:"", g2p:"" },
+  { name:"김라희", cls:"중등 2학년 월수 A", sp:"01087285204", g1t:"기타", g1p:"01052505204", g2t:"", g2p:"" },
+  { name:"박종연", cls:"중등 2학년 월수 A", sp:"01041948094", g1t:"어머니", g1p:"01041948094", g2t:"", g2p:"" },
+  { name:"최민준", cls:"중등 2학년 월수 B", sp:"01053341223", g1t:"기타", g1p:"01053341223", g2t:"", g2p:"" },
+  { name:"윤성준", cls:"중등 2학년 월수 B", sp:"01062634869", g1t:"어머니", g1p:"01041154869", g2t:"", g2p:"" },
+  { name:"이지우B", cls:"중등 2학년 월수 B", sp:"01025447974", g1t:"어머니", g1p:"01046647974", g2t:"", g2p:"" },
+  { name:"이지우A", cls:"중등 2학년 월수 B", sp:"01056133813", g1t:"어머니", g1p:"01043813813", g2t:"", g2p:"" },
+  { name:"엄지예", cls:"중등 2학년 월수 B", sp:"01040783552", g1t:"어머니", g1p:"01042083552", g2t:"", g2p:"" },
+  { name:"배서준", cls:"중등 2학년 월수 B", sp:"01043987125", g1t:"어머니", g1p:"01025817125", g2t:"", g2p:"" },
+  { name:"김시은", cls:"중등 2학년 월수 B", sp:"01053297909", g1t:"어머니", g1p:"01099277909", g2t:"", g2p:"" },
+  { name:"김지아", cls:"중등 2학년 월수 B", sp:"01037375273", g1t:"어머니", g1p:"01088871511", g2t:"", g2p:"" },
+  { name:"이희국", cls:"중등 2학년 월수 C", sp:"01085917416", g1t:"어머니", g1p:"01085917416", g2t:"", g2p:"" },
+  { name:"이지민", cls:"중등 2학년 월수 C", sp:"01043207679", g1t:"어머니", g1p:"01088446660", g2t:"", g2p:"" },
+  { name:"이은혜", cls:"중등 2학년 월수 C", sp:"01025589179", g1t:"어머니", g1p:"01032440071", g2t:"", g2p:"" },
+  { name:"오준호", cls:"중등 2 학년 화목 A", sp:"01050395112", g1t:"기타", g1p:"01050395112", g2t:"", g2p:"" },
+  { name:"임서율", cls:"중등 2 학년 화목 A", sp:"01037849351", g1t:"기타", g1p:"01035249351", g2t:"", g2p:"" },
+  { name:"정하연", cls:"중등 2 학년 화목 A", sp:"01087480581", g1t:"어머니", g1p:"01087480581", g2t:"", g2p:"" },
+  { name:"여인서", cls:"중등 2 학년 화목 A", sp:"01037635767", g1t:"어머니", g1p:"01063196071", g2t:"", g2p:"" },
+  { name:"오세희", cls:"중등 2 학년 화목 A", sp:"01062219032", g1t:"어머니", g1p:"01040802789", g2t:"", g2p:"" },
+  { name:"박서윤", cls:"중등 2 학년 화목 A", sp:"01053712367", g1t:"어머니", g1p:"01090582367", g2t:"", g2p:"" },
+  { name:"김지현", cls:"중등 2 학년 화목 A", sp:"01036172013", g1t:"어머니", g1p:"01052632013", g2t:"", g2p:"" },
+  { name:"이형근", cls:"중등 3학년 월수 A", sp:"01043275874", g1t:"어머니", g1p:"01027295874", g2t:"", g2p:"" },
+  { name:"이현호", cls:"중등 3학년 월수 A", sp:"01040101168", g1t:"어머니", g1p:"01071770934", g2t:"", g2p:"" },
+  { name:"김해율", cls:"중등 3학년 월수 A", sp:"01050336453", g1t:"어머니", g1p:"01050336453", g2t:"", g2p:"" },
+  { name:"김진현", cls:"중등 3학년 월수 A", sp:"01087775181", g1t:"기타", g1p:"01087775181", g2t:"", g2p:"" },
+  { name:"심영제", cls:"중등 3 학년 화목 A", sp:"01023743881", g1t:"어머니", g1p:"01071183871", g2t:"", g2p:"" },
+  { name:"최이안", cls:"중등 3 학년 화목 A", sp:"01092241808", g1t:"어머니", g1p:"01036251808", g2t:"", g2p:"" },
+  { name:"정진성", cls:"중등 3 학년 화목 A", sp:"01095266533", g1t:"기타", g1p:"01095266533", g2t:"", g2p:"" },
+  { name:"백윤우", cls:"중등 3 학년 화목 A", sp:"01031630815", g1t:"기타", g1p:"01031630815", g2t:"", g2p:"" },
+  { name:"김민결", cls:"중등 3 학년 화목 A", sp:"01043459057", g1t:"기타", g1p:"01032719057", g2t:"", g2p:"" },
+  { name:"마사랑", cls:"중등 3학년 화목 B", sp:"01066496856", g1t:"어머니", g1p:"01090410705", g2t:"", g2p:"" },
+  { name:"김찬희", cls:"중등 3학년 화목 B", sp:"01037963491", g1t:"어머니", g1p:"01077910321", g2t:"", g2p:"" },
+  { name:"강범구", cls:"중등 3학년 화목 B", sp:"01079043725", g1t:"어머니", g1p:"01048121017", g2t:"", g2p:"" },
+  { name:"김수현", cls:"중등 3학년 화목 B", sp:"01096312145", g1t:"어머니", g1p:"01086362145", g2t:"", g2p:"" },
+  { name:"전태오", cls:"중등 3학년 화목 C", sp:"01047613538", g1t:"기타", g1p:"01047613538", g2t:"", g2p:"" },
+  { name:"이효준", cls:"중등 3학년 화목 C", sp:"01043699410", g1t:"어머니", g1p:"01032109410", g2t:"", g2p:"" },
+  { name:"이하온", cls:"중등 3학년 화목 C", sp:"01089237775", g1t:"어머니", g1p:"01089387775", g2t:"", g2p:"" },
+  { name:"이주승", cls:"중등 3학년 화목 C", sp:"01030870766", g1t:"기타", g1p:"01062990766", g2t:"", g2p:"" },
+  { name:"박은서", cls:"중등 3학년 화목 C", sp:"01042037357", g1t:"기타", g1p:"01042037357", g2t:"", g2p:"" },
+  { name:"강서율", cls:"중등 3학년 화목 C", sp:"01053004027", g1t:"기타", g1p:"01053004027", g2t:"", g2p:"" },
+  { name:"이주승", cls:"내신반(언남/중대부중 3학년) 화목", sp:"01030870766", g1t:"기타", g1p:"01062990766", g2t:"", g2p:"" },
+];
+
+const CLASS_ORDER = [
+  "초등 파닉스 A","초등 파닉스 C","초등 2,3 학년 화목 A",
+  "초등 4 학년 월수금A","초등 4 학년 월수금B",
+  "초등 5 학년 화목","초등 5학년 월수금 A","초등 5학년 월수금 B",
+  "초등 6학년 화목 A","초등 6학년 월수금 A","초등 6학년 월수금 B",
+  "중등 1학년 월수 A","중등 1 학년 화목",
+  "중등 2학년 월수 A","중등 2학년 월수 B","중등 2학년 월수 C","중등 2 학년 화목 A",
+  "중등 3학년 월수 A","중등 3 학년 화목 A","중등 3학년 화목 B","중등 3학년 화목 C",
+  "내신반(언남/중대부중 3학년) 화목"
+];
+
+const GRADE_GROUPS = [
+  { label:"전체", grades:[] },
+  { label:"초등 저학년", grades:["초등 파닉스","초등 2,3"] },
+  { label:"초등 4학년", grades:["초등 4"] },
+  { label:"초등 5학년", grades:["초등 5"] },
+  { label:"초등 6학년", grades:["초등 6"] },
+  { label:"중등 1학년", grades:["중등 1"] },
+  { label:"중등 2학년", grades:["중등 2"] },
+  { label:"중등 3학년", grades:["중등 3","내신반"] },
+];
+
+let activeGrade = "전체";
+let activeClass = "전체";
+
+function fmt(n) {
+  if (!n) return "-";
+  const d = n.replace(/\D/g,"");
+  if (d.length===11) return d.slice(0,3)+"-"+d.slice(3,7)+"-"+d.slice(7);
+  if (d.length===10) return d.slice(0,3)+"-"+d.slice(3,6)+"-"+d.slice(6);
+  return n;
+}
+
+function tagClass(t) {
+  if (t==="어머니") return "tag-mom";
+  if (t==="아버지") return "tag-dad";
+  if (t && t.includes("고모")) return "tag-aunt";
+  return "tag-other";
+}
+
+function renderGradeTabs() {
+  const el = document.getElementById("gradeTabs");
+  el.innerHTML = GRADE_GROUPS.map(g =>
+    `<button class="grade-tab${activeGrade===g.label?" active":""}" onclick="setGrade('${g.label}')">${g.label}</button>`
+  ).join("");
+}
+
+function getClassesForGrade(gradeLabel) {
+  if (gradeLabel === "전체") return CLASS_ORDER.filter(c => students.some(s => s.cls===c));
+  const group = GRADE_GROUPS.find(g => g.label===gradeLabel);
+  if (!group) return [];
+  return CLASS_ORDER.filter(c => students.some(s=>s.cls===c) && group.grades.some(g=>c.includes(g)));
+}
+
+function renderChips() {
+  const searchVal = document.getElementById("searchInput").value;
+  const wrap = document.getElementById("classChipsWrap");
+  if (searchVal.trim()) { wrap.style.display="none"; return; }
+  wrap.style.display="block";
+  const classes = getClassesForGrade(activeGrade);
+  const el = document.getElementById("classChips");
+  el.innerHTML = `<button class="chip${activeClass==="전체"?" active":""}" onclick="setClass('전체')">전체 클래스</button>` +
+    classes.map(c => `<button class="chip${activeClass===c?" active":""}" onclick="setClass('${c.replace(/'/g,"\\'")}')">${c}</button>`).join("");
+}
+
+function getFiltered() {
+  const q = document.getElementById("searchInput").value.trim();
+  let list = students;
+  if (q) {
+    return list.filter(s => s.name.includes(q)||s.cls.includes(q)||s.sp.includes(q)||s.g1p.includes(q));
+  }
+  if (activeClass !== "전체") {
+    list = list.filter(s => s.cls===activeClass);
+  } else if (activeGrade !== "전체") {
+    const group = GRADE_GROUPS.find(g=>g.label===activeGrade);
+    if (group) list = list.filter(s => group.grades.some(g=>s.cls.includes(g)));
+  }
+  return list;
+}
+
+function renderCards() {
+  const list = getFiltered();
+  const q = document.getElementById("searchInput").value.trim();
+  const countEl = document.getElementById("resultCount");
+  if (q) countEl.textContent = `"${q}" 검색 결과 · ${list.length}명`;
+  else if (activeClass!=="전체") countEl.textContent = `${activeClass} · ${list.length}명`;
+  else countEl.textContent = `${activeGrade!=="전체"?activeGrade+" · ":""}${list.length}명`;
+
+  const grid = document.getElementById("cardsGrid");
+  if (list.length===0) {
+    grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><div class="empty-icon">🔍</div>검색 결과가 없습니다</div>`;
+    return;
+  }
+  grid.innerHTML = list.map(s => `
+    <div class="card">
+      <div class="card-top">
+        <div class="avatar">${s.name[0]}</div>
+        <div>
+          <div class="student-name">${s.name}</div>
+          <div class="student-class">${s.cls}</div>
+        </div>
+      </div>
+      <div class="phone-rows">
+        <div class="phone-row">
+          <span class="tag tag-student">학생</span>
+          <a class="phone-link" href="tel:${s.sp}">${fmt(s.sp)}</a>
+        </div>
+        ${s.g1p ? `<div class="phone-row">
+          <span class="tag ${tagClass(s.g1t)}">${s.g1t||"보호자"}</span>
+          <a class="phone-link" href="tel:${s.g1p}">${fmt(s.g1p)}</a>
+        </div>` : ""}
+        ${s.g2p ? `<div class="phone-row">
+          <span class="tag ${tagClass(s.g2t)}">${s.g2t||"보호자"}</span>
+          <a class="phone-link" href="tel:${s.g2p}">${fmt(s.g2p)}</a>
+        </div>` : ""}
+      </div>
+    </div>
+  `).join("");
+}
+
+function setGrade(label) {
+  activeGrade = label;
+  activeClass = "전체";
+  document.getElementById("searchInput").value = "";
+  renderGradeTabs();
+  renderChips();
+  renderCards();
+}
+
+function setClass(cls) {
+  activeClass = cls;
+  document.getElementById("searchInput").value = "";
+  renderChips();
+  renderCards();
+}
+
+function onSearch() {
+  activeClass = "전체";
+  activeGrade = "전체";
+  renderGradeTabs();
+  renderChips();
+  renderCards();
+}
+
+// Init
+const allClasses = CLASS_ORDER.filter(c => students.some(s=>s.cls===c));
+document.getElementById("totalCount").textContent = `총 ${students.length}명 · ${allClasses.length}개 클래스`;
+renderGradeTabs();
+renderChips();
+renderCards();
+</script>
+</body>
+</html>
